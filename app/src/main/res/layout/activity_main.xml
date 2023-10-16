@@ -19,6 +19,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <include
+        android:id="@+id/contentMain"
+        layout="@layout/content_main" />
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -27,5 +32,6 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
         app:srcCompat="@android:drawable/ic_input_add" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -9,7 +9,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                             if (result.getData() != null && result.getData().getExtras() != null) {
                                 Alumno alumno = (Alumno) result.getData().getExtras().getSerializable("ALUMNO");
                                 listaAlumnos.add(alumno);
+                                mostrarAlumnos();
                             } else {
                                 Toast.makeText(MainActivity.this, "No llegaron los datos...", Toast.LENGTH_SHORT).show();
                             }
@@ -65,11 +68,33 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
-    /**
-     * TODITO:
-     * 1. Elemento para mostrar la infomarción del alumno en el principal (TextView)
-     * 2. El conjunto de datos a mostrar (listaAlumnos)
-     * 3. Contenedor para poner cada elemnto alumno (Scroll)
-     * 4. La lógica para mostrar los elementos en el Scroll del principal
-     */
+
+    private void mostrarAlumnos() {
+        //eliminar lo que haya en el Linear Layout
+        binding.contentMain.contenedorMain.removeAllViews();
+
+        for (Alumno a : listaAlumnos) {
+            LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+
+            View alumnoView = layoutInflater.inflate(R.layout.alumno_fila_view, null);
+            TextView txtNombre = alumnoView.findViewById(R.id.lbNombreAlumnoView);
+            TextView txtApellidos = alumnoView.findViewById(R.id.lbApellidosAlumnoView);
+            TextView txtCiclo = alumnoView.findViewById(R.id.lbCicloAlumnoView);
+            TextView txtGrupo = alumnoView.findViewById(R.id.lbGrupoAlumnoView);
+
+            txtNombre.setText(a.getNombre());
+            txtApellidos.setText(a.getApellidos());
+            txtCiclo.setText(a.getCiclo());
+            txtGrupo.setText(String.valueOf(a.getGrupo()));
+
+            binding.contentMain.contenedorMain.addView(alumnoView);
+        }
+    }
 }
+/**
+ * TODITO:
+ * 1. Elemento para mostrar la infomarción del alumno en el principal (TextView)
+ * 2. El conjunto de datos a mostrar (listaAlumnos) OK
+ * 3. Contenedor para poner cada elemnto alumno (Scroll)
+ * 4. La lógica para mostrar los elementos en el Scroll del principal
+ */
