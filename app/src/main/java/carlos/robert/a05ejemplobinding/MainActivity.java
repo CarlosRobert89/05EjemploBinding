@@ -23,8 +23,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private ActivityResultLauncher<Intent> launcherAlumno;
-
+    private ActivityResultLauncher<Intent> editAlumnoLauncher;
     private ArrayList<Alumno> listaAlumnos;
+    private int posicion;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void inicializarLauncher() {
         launcherAlumno = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() { //para enviar la infomación (el coche con la maleta) hacia delante.
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
@@ -60,6 +62,28 @@ public class MainActivity extends AppCompatActivity {
                                 mostrarAlumnos();
                             } else {
                                 Toast.makeText(MainActivity.this, "No llegaron los datos...", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(MainActivity.this, "ACCIÓN CANCELADA", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+        editAlumnoLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {//para enviar la infomación (el coche con la maleta) hacia atrás.
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        //que ocurrirá cuando vuelva de la actividad EDIT
+                        if (result.getResultCode() == RESULT_OK) {
+                            if (result.getData() != null && result.getData().getExtras() != null) {
+                                //PULSARON EDITAR
+                                Alumno alumno = (Alumno) result.getData().getExtras().getSerializable("ALUMNO");
+                                listaAlumnos.set(posicion, alumno);
+                                mostrarAlumnos();
+                            } else {
+                                //PULSARON BORRAR
+                                listaAlumnos.remove(posicion);
+                                mostrarAlumnos();
                             }
                         } else {
                             Toast.makeText(MainActivity.this, "ACCIÓN CANCELADA", Toast.LENGTH_SHORT).show();
@@ -86,6 +110,21 @@ public class MainActivity extends AppCompatActivity {
             txtApellidos.setText(a.getApellidos());
             txtCiclo.setText(a.getCiclo());
             txtGrupo.setText(String.valueOf(a.getGrupo()));
+
+            alumnoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //enviar el alumno
+                    Intent intent = new Intent(MainActivity.this, EditAlumnoActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("ALUMNO", a);
+                    intent.putExtras(bundle);
+
+                    posicion = listaAlumnos.indexOf(a);
+                    //recibir el alumno modificado o la orden de eliminar
+                    editAlumnoLauncher.launch(intent);
+                }
+            });
 
             binding.contentMain.contenedorMain.addView(alumnoView);
         }
