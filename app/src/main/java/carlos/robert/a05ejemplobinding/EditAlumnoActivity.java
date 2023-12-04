@@ -45,8 +45,6 @@ public class EditAlumnoActivity extends AppCompatActivity {
                 }else{
                     Toast.makeText(EditAlumnoActivity.this, "FALTAN DATOS", Toast.LENGTH_SHORT).show();
                 }
-                //
-
             }
         });
 
